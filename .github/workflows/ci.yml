@@ -1,0 +1,39 @@
+name: Firmware and host tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: arduino/setup-arduino-cli@v2
+        with:
+          version: '1.5.1'
+      - name: Host protocol and frontend tests
+        run: python tools/run_tests.py --sanitize
+      - name: Install browser test dependencies
+        run: |
+          npm install --ignore-scripts
+          npx playwright install --with-deps chromium
+      - name: Responsive browser and API fixture tests
+        run: npm run test:browser
+      - name: Install pinned core and compile
+        shell: pwsh
+        run: ./tools/build.ps1 -InstallCore
+      - name: Check generated web assets
+        run: python tools/embed_web.py --check
+      - name: Retain local-build equivalent firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: rehab-esp32s3-firmware
+          path: build/artifacts/
+          retention-days: 7

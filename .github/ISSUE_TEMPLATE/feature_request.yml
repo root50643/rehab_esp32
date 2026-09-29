@@ -1,0 +1,23 @@
+name: 功能建議
+description: 描述需要解決的操作、整合或維護問題。
+title: "[Feature] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 要解決的問題
+      description: 誰在什麼情境遇到困難？目前如何處理？
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: 期望的行為
+      description: 提供使用流程與可驗收的結果，避免使用真實卡號或個人讀值。
+    validations:
+      required: true
+  - type: textarea
+    id: constraints
+    attributes:
+      label: 硬體、協定與相容限制
+      description: 若需要變更接腳、封包、儲存或外設，請附可公開的規格來源及限制。

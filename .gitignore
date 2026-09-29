@@ -1,0 +1,17 @@
+/build/
+/backups/
+/local/
+/artifacts/
+/firmware/RehabEsp32/src/web_assets.h
+.venv/
+__pycache__/
+*.py[cod]
+*.log
+.env
+.env.*
+*.bin
+*.elf
+*.map
+node_modules/
+.DS_Store
+Thumbs.db

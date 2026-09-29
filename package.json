@@ -1,0 +1,8 @@
+{
+  "name": "rehab-esp32-ui-tests",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Offline UI tests only; firmware has no Node.js dependency",
+  "scripts": {"test": "node --test tests/frontend.test.cjs", "test:browser": "node tools/browser_test.cjs"},
+  "devDependencies": {"playwright": "1.62.1"}
+}

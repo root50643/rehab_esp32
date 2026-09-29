@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="680" viewBox="0 0 1000 680" role="img" aria-labelledby="title desc">
+  <title id="title">ESP32-S3 復健機功能接線圖</title>
+  <desc id="desc">電腦透過 CH340 燒錄。ESP32-S3 GPIO17 TX、GPIO18 RX 經核對的電氣介面連到機台。GPIO4及5經驅動介面作為啟動及停止。GPIO19及20為CL-2000 USB D minus及D plus；讀卡機另需經保護的5V供電。這不是板上插座定位圖。</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#547395"/></marker><style>text{font-family:system-ui,-apple-system,"Segoe UI","Microsoft JhengHei",sans-serif;fill:#1d3048}.title{font-size:24px;font-weight:700}.heading{font-size:18px;font-weight:650}.label{font-size:14px}.small{font-size:12px;fill:#66758c}.node{fill:#fff;stroke:#d4dfea;stroke-width:1.5}.line{fill:none;stroke:#547395;stroke-width:2;marker-end:url(#arrow)}.radio{fill:none;stroke:#8871bd;stroke-width:2;stroke-dasharray:6 5}</style></defs>
+  <rect width="1000" height="680" rx="18" fill="#f4f6fa"/>
+  <text x="32" y="45" class="title">ESP32-S3 功能接線</text><text x="32" y="70" class="small">韌體預設 GPIO · 非開發板插座位置 · 電氣介面與供電須依實機核對</text>
+  <rect x="340" y="125" width="290" height="365" rx="16" fill="#edf4ff" stroke="#a8c4e9" stroke-width="1.5"/>
+  <text x="364" y="162" class="heading">ESP32-S3</text><text x="364" y="187" class="small">16 MB Flash / 8 MB OPI PSRAM</text>
+  <path d="M360 203H610" stroke="#cbdced"/>
+  <text x="366" y="239" class="label">GPIO17 · UART TX</text><text x="366" y="273" class="label">GPIO18 · UART RX</text>
+  <text x="366" y="333" class="label">GPIO4 · Start 500 ms</text><text x="366" y="367" class="label">GPIO5 · Stop 3 s + 500 ms</text>
+  <text x="366" y="425" class="label">GPIO19 · USB D−</text><text x="366" y="455" class="label">GPIO20 · USB D+</text>
+  <rect x="30" y="125" width="245" height="113" rx="13" class="node"/><text x="49" y="160" class="heading">電腦</text><text x="49" y="186" class="label">CH340 USB-UART</text><text x="49" y="210" class="small">目前 COM3 · 115200 除錯</text>
+  <path d="M275 170H340" class="line"/><text x="285" y="155" class="small">USB</text>
+  <rect x="30" y="294" width="245" height="103" rx="13" class="node"/><text x="49" y="329" class="heading">手機</text><text x="49" y="354" class="label">設定 Wi-Fi / Captive Portal</text><text x="49" y="377" class="small">192.168.4.1 · 持續開啟 AP</text><path d="M275 344H340" class="radio"/>
+  <rect x="30" y="440" width="245" height="90" rx="13" class="node"/><text x="49" y="474" class="heading">BLE 心率感測器</text><text x="49" y="502" class="small">180D / 2A37 · 無線連線</text><path d="M275 483H309V460H340" class="radio"/>
+  <rect x="721" y="189" width="249" height="231" rx="13" class="node"/><text x="741" y="223" class="heading">機台介面</text>
+  <text x="741" y="255" class="label">機台 RX ← ESP32 TX</text><text x="741" y="285" class="label">機台 TX → ESP32 RX</text><text x="741" y="312" class="small">57600 / 8N1</text>
+  <text x="741" y="352" class="label">Start / Stop 驅動介面</text><text x="741" y="381" class="small">核對電位、極性、隔離與共地</text><text x="741" y="402" class="small">GPIO 不直接驅動負載</text>
+  <path d="M630 235H685V250H721" class="line"/><path d="M721 280H690V270H630" class="line"/>
+  <path d="M630 330H675V344H721" class="line"/><path d="M630 365H674V369H721" class="line"/>
+  <text x="645" y="218" class="small">必要的</text><text x="645" y="233" class="small">電位轉換</text>
+  <rect x="340" y="544" width="290" height="87" rx="13" class="node"/><text x="364" y="577" class="heading">CL-2000 USB 讀卡機</text><text x="364" y="606" class="small">CCID · VID 1206 / PID 2107</text>
+  <path d="M475 490V544" class="line"/><text x="492" y="521" class="small">D− / D+ / GND</text>
+  <rect x="721" y="496" width="249" height="135" rx="13" fill="#fff8e9" stroke="#e8d3a6"/><text x="741" y="531" class="heading">讀卡機 5V 供電</text><text x="741" y="561" class="label">合適電流容量與保護</text><text x="741" y="588" class="small">確認反灌防護及參考地</text><text x="741" y="612" class="small">不由 GPIO / 3.3V 腳供電</text>
+  <path d="M721 584H630" class="line"/><text x="648" y="571" class="small">VBUS</text>
+  <text x="32" y="651" class="small">原生 USB19/20 專供 Host；燒錄走 CH340。詳細接法與限制見 docs/WIRING.md。</text>
+</svg>

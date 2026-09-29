@@ -1,0 +1,39 @@
+name: 問題回報
+description: 回報韌體、設定頁或通訊問題；請先移除現場資料。
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: "請勿附上帳密、Flash 備份、真實 UID、個人心率或未遮蔽的現場 SSID／MAC。"
+  - type: textarea
+    id: environment
+    attributes:
+      label: 韌體與測試環境
+      description: 韌體版本／commit、板型、Flash／PSRAM、core、作業系統、供電及外設型號。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 重現步驟
+      description: 包含操作順序、發生頻率、是否正在運動／掃描／重新連線。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 預期行為與實際結果
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 去識別的除錯資料
+      description: 最小必要狀態、錯誤計數、封包或人工資料重現。接線問題請提供 GPIO 名稱與電氣準位。
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 資料確認
+      options:
+        - label: 已檢查附件及內容，不含帳密、Flash備份或真實個人／現場識別資料。
+          required: true

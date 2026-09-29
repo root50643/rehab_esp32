@@ -1,0 +1,6 @@
+# No filesystem, OTA or core dump: exercise data must not be persisted.
+# Arduino uploads boot_app0.bin at 0xe000..0xffff even without OTA.
+# PHY initialization data is embedded in the pinned ESP32 Arduino core.
+# Name, Type, SubType, Offset, Size, Flags
+nvs, data, nvs, 0x9000, 0x5000,
+factory, app, factory, 0x10000, 0x400000,

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f4f6fa">
+  <title>復健機 · 裝置設定與除錯</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳至主要內容</a>
+  <header class="site-header shell">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">R</span><span>REHAB<span class="brand-caption">裝置控制台</span></span></div>
+    <span id="connectionBadge" class="badge neutral">正在連接裝置</span>
+  </header>
+  <main id="main" class="shell">
+    <section class="page-heading" aria-labelledby="pageTitle">
+      <div><p class="eyebrow">ESP32-S3 · DEVICE CONSOLE</p><h1 id="pageTitle">復健機即時狀態</h1><p class="muted">查看裝置讀值，設定連線。所有資料由這台 ESP32 提供。</p></div>
+      <p class="update-note"><span class="live-dot" aria-hidden="true"></span><span id="refreshState">每秒更新 · 等待第一筆資料</span></p>
+    </section>
+    <div id="statusError" class="notice error" role="status" hidden></div>
+    <div id="pendingNotice" class="notice" hidden><strong>設定已保存，等待套用</strong><span>運動停止且通訊流程完成後，裝置會套用新設定。</span></div>
+    <section class="metrics" aria-label="主要即時讀值">
+      <article class="metric metric-heart"><div class="metric-label">藍牙心率 <span aria-hidden="true">♡</span></div><div class="metric-number"><span id="metricBpm">—</span><small>BPM</small></div><div id="bpmBadge" class="metric-note">尚未收到</div><p id="bpmSource" class="metric-source">BLE 心率感測器</p></article>
+      <article class="metric"><div class="metric-label">機台轉速 <span aria-hidden="true">↻</span></div><div class="metric-number"><span id="metricRpm">—</span><small>RPM</small></div><div id="rpmBadge" class="metric-note">尚未收到</div><p id="rpmSource" class="metric-source">機台 UART 回報</p></article>
+      <article class="metric"><div class="metric-label">實際阻力 <span aria-hidden="true">≋</span></div><div class="metric-number"><span id="metricLevel">—</span><small>LEVEL</small></div><div id="levelBadge" class="metric-note">尚未收到</div><p id="levelSource" class="metric-source">機台 UART 回報</p></article>
+    </section>
+    <section class="panel overview" aria-labelledby="overviewTitle">
+      <div class="panel-heading"><h2 id="overviewTitle">連線概況</h2><span id="machineState" class="badge neutral">機台狀態 —</span></div>
+      <div class="connection-grid">
+        <div><span class="connection-label">目標 Wi-Fi</span><strong id="wifiSummary">—</strong><span id="wifiDetail" class="muted small">等待裝置資料</span></div>
+        <div><span class="connection-label">TCP 伺服器</span><strong id="tcpSummary">—</strong><span id="tcpDetail" class="muted small">等待裝置資料</span></div>
+        <div><span class="connection-label">藍牙心率裝置</span><strong id="bleSummary">—</strong><span id="bleDetail" class="muted small">等待裝置資料</span></div>
+        <div><span class="connection-label">USB 讀卡機</span><strong id="rfidSummary">—</strong><span id="rfidDetail" class="muted small">等待裝置資料</span></div>
+      </div>
+      <div class="entry-grid" aria-label="裝置設定入口">
+        <div><span class="connection-label">設定熱點入口</span><a id="apEntry" target="_blank" rel="noopener" aria-label="在新分頁開啟設定熱點入口" aria-disabled="true">—</a><span class="entry-help">連入裝置的設定 Wi-Fi 使用</span></div>
+        <div><span class="connection-label">區域網路入口</span><a id="lanEntry" target="_blank" rel="noopener" aria-label="在新分頁開啟區域網路入口" aria-disabled="true">—</a><span class="entry-help">與裝置位於同一區域網路時使用</span></div>
+      </div>
+    </section>
+    <div class="workspace-grid">
+      <section class="panel settings-panel" aria-labelledby="settingsTitle">
+        <div class="panel-heading"><div><p class="eyebrow">CONNECTION SETTINGS</p><h2 id="settingsTitle">連線設定</h2></div><span id="unsavedBadge" class="badge warning" hidden>尚未儲存</span></div>
+        <p class="section-help">設定熱點會持續開啟，隨時都可以回到這裡修改設定。</p>
+        <form id="configForm" novalidate>
+          <fieldset id="configFields" disabled>
+            <legend class="sr-only">Wi-Fi、伺服器與心率裝置設定</legend>
+            <div class="field-block">
+              <div class="field-heading"><label for="wifiSsid">目標 Wi-Fi 名稱</label><button class="text-button scan-button" id="scanWifi" type="button">搜尋 Wi-Fi</button></div>
+              <select id="wifiResults" aria-label="搜尋到的 Wi-Fi 網路"><option value="">選擇搜尋到的網路…</option></select>
+              <input id="wifiSsid" name="wifi_ssid" type="text" maxlength="32" autocomplete="off" spellcheck="false" placeholder="或自行輸入 Wi-Fi 名稱" aria-describedby="wifiHelp wifiScanState">
+              <p class="field-help" id="wifiHelp">支援 2.4 GHz 網路；隱藏的 Wi-Fi 可直接輸入名稱。</p><p id="wifiScanState" class="scan-state" role="status"></p>
+            </div>
+            <div class="field-block">
+              <div class="field-heading"><span class="field-label">Wi-Fi 密碼</span><span id="passwordStored" class="muted small">正在讀取</span></div>
+              <label class="check-row" for="changePassword"><input id="changePassword" type="checkbox"><span>更改 Wi-Fi 密碼</span></label>
+              <p class="field-help">未勾選時保留裝置上的密碼；更換網路時請一併確認密碼。</p>
+              <div id="passwordEditor" class="password-editor" hidden>
+                <div class="radio-group" role="group" aria-label="Wi-Fi 安全性">
+                  <label><input name="passwordMode" id="modeSecured" type="radio" value="secured" checked>使用密碼</label>
+                  <label><input name="passwordMode" id="modeOpen" type="radio" value="open">無密碼網路</label>
+                </div>
+                <label class="sr-only" for="wifiPassword">新的 Wi-Fi 密碼</label>
+                <div class="password-input"><input id="wifiPassword" name="wifi_password" type="password" maxlength="64" autocomplete="new-password" placeholder="輸入新的 Wi-Fi 密碼" disabled><button id="togglePassword" class="password-toggle" type="button" aria-label="顯示密碼" aria-pressed="false">顯示</button></div>
+                <p id="passwordHelp" class="field-help">輸入 8–63 個字元，或 64 位十六進位金鑰。</p>
+              </div>
+            </div>
+            <div class="field-block">
+              <label for="socketServer">TCP 伺服器 <code>socket_server</code></label>
+              <input id="socketServer" name="socket_server" type="text" maxlength="253" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="例如 192.168.0.100" aria-describedby="serverHelp">
+              <p id="serverHelp" class="field-help">填入 IPv4 或主機名稱，連接埠固定為 9999；不需加上 http://。</p>
+            </div>
+            <div class="field-block">
+              <div class="field-heading"><label for="heartAddress">藍牙心率裝置</label><button class="text-button scan-button" id="scanBle" type="button">搜尋藍牙</button></div>
+              <select id="bleResults" aria-label="搜尋到的藍牙裝置"><option value="">選擇搜尋到的裝置…</option></select>
+              <label class="field-subtitle" for="heartAddress">HEART_RATE_ADDRESS</label>
+              <input id="heartAddress" name="heart_rate_address" type="text" maxlength="17" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="AA:BB:CC:DD:EE:FF" aria-describedby="bleHelp bleScanState">
+              <p class="field-help" id="bleHelp">選單顯示裝置名稱與 MAC，也可自行輸入；留白可停用心率連線。</p><p id="bleScanState" class="scan-state" role="status"></p>
+            </div>
+            <div class="save-row"><button id="saveConfig" class="button primary" type="submit">儲存設定</button><button id="reloadConfig" class="button secondary" type="button">重新載入</button></div>
+          </fieldset>
+          <div id="configMessage" class="form-message" role="status" aria-live="polite">正在讀取裝置設定…</div>
+          <button id="retryConfig" class="button secondary" type="button" hidden>重試讀取設定</button>
+        </form>
+        <p class="settings-footnote">儲存時若仍在運動，設定將於停止後套用。變更 Wi-Fi 後，區網 IP 可能改變；若頁面中斷，可重新連接設定熱點，或查看路由器的 DHCP 清單取得新 IP。</p>
+      </section>
+      <section class="panel readings-panel" aria-labelledby="readingsTitle">
+        <div class="panel-heading"><div><p class="eyebrow">LIVE READINGS</p><h2 id="readingsTitle">機台回報數值</h2></div><span id="uartBadge" class="badge neutral">尚未收到</span></div>
+        <p class="section-help">資料來源：機台 UART。各類回報 5 秒未更新即標示過期，不以其他封包代替更新。</p>
+        <dl id="machineReadings" class="data-list"></dl>
+        <div class="source-note"><strong>如何判讀阻力</strong><p>「要求」是 TCP 主機的目標；「已送出」表示指令已送往機台；「機台回報」才是實際收到的數值。</p></div>
+        <div class="source-note"><strong>單位尚未確認的欄位</strong><p>距離、熱量、功率與扭力保留原始值，不套用尚未驗證的換算比例。</p></div>
+      </section>
+    </div>
+    <section class="panel advanced-panel" aria-labelledby="advancedTitle">
+      <details id="advancedDetails">
+        <summary><span><span class="eyebrow">DIAGNOSTICS</span><span id="advancedTitle" class="summary-title">進階通訊資訊</span><span class="summary-description">資料來源、狀態查詢、封包與錯誤計數</span></span><span class="details-chevron" aria-hidden="true">⌄</span></summary>
+        <div class="advanced-content"><p class="section-help">僅顯示目前狀態及最後一次封包，不保存歷史。「已寫入 TCP」不代表已收到主機確認；0x23 數值回報不等待 ACK。</p><div id="diagnosticGroups" class="diagnostic-grid"></div></div>
+      </details>
+    </section>
+    <footer class="page-footer"><p><span class="footer-dot" aria-hidden="true"></span><span id="apFootnote">設定熱點保持開啟</span></p><p>設定熱點入口 <a href="http://192.168.4.1/">192.168.4.1</a><span class="footer-divider">·</span><span id="firmwareVersion">ESP32-S3</span></p></footer>
+  </main>
+  <noscript><p class="notice error shell">此頁需要啟用 JavaScript 才能讀取裝置狀態及儲存設定。</p></noscript>
+</body>
+</html>

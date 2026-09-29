@@ -1,0 +1,128 @@
+{
+  "firmware": "0.1.1 / 人工測試資料",
+  "uptime_ms": 125000,
+  "pending": false,
+  "ap": {
+    "ssid": "RehabSetup_AA:BB:CC:DD:EE:FF",
+    "ip": "192.168.4.1",
+    "clients": 1
+  },
+  "wifi": {
+    "state": "connected",
+    "ssid": "Rehab-Demo",
+    "ip": "192.0.2.20",
+    "rssi": -48,
+    "last_error": ""
+  },
+  "tcp": {
+    "connected": true,
+    "server": "192.0.2.10",
+    "port": 9999,
+    "generation": 1,
+    "reconnects": 1,
+    "last_error": "",
+    "rx_hex": "7A 20 01 02 DC 7F",
+    "tx_hex": "7A 20 02 02 C8 13 7F",
+    "rx_age_ms": 200,
+    "tx_age_ms": 180,
+    "checksum_errors": 0,
+    "framing_errors": 0,
+    "timeouts": 0,
+    "last_query": "7A 20 01 02 DC 7F",
+    "last_reply": "7A 20 02 02 C8 13 7F",
+    "telemetry": {
+      "rpm": {
+        "value": 60,
+        "age_ms": 100
+      },
+      "level": {
+        "value": 8,
+        "age_ms": 100
+      },
+      "bpm": {
+        "value": 80,
+        "age_ms": 100
+      }
+    },
+    "card_result": "主機確認人工 UID",
+    "writing": false,
+    "awaiting_ack": false,
+    "queued_events": 0,
+    "queued_replies": 1,
+    "telemetry_pending": true
+  },
+  "ble": {
+    "state": "connected",
+    "connected": true,
+    "subscribed": true,
+    "ready": true,
+    "bpm": 80,
+    "battery": 92,
+    "name": "Demo Heart Sensor",
+    "address": "AA:BB:CC:DD:EE:01",
+    "address_type": "random",
+    "rssi": -52,
+    "notifications": 120,
+    "consecutive": 120,
+    "age_ms": 200,
+    "disconnects": 0,
+    "last_error": "",
+    "last_notification_hex": "00 50"
+  },
+  "machine": {
+    "state": "Start",
+    "tracking": true,
+    "uart_online": true,
+    "age_ms": 200,
+    "age28_ms": 200,
+    "age3f_ms": 250,
+    "rpm": 60,
+    "machine_bpm": 78,
+    "minutes": 2,
+    "seconds": 5,
+    "distance_raw": 12,
+    "calories_raw": 34,
+    "watt28_raw": 56,
+    "watt3f_raw": 57,
+    "torque_raw": 18,
+    "reported_level": 8,
+    "target_level": 12,
+    "sent_level": 10,
+    "level_ack_pending": true,
+    "last_error": "",
+    "pulse": "idle",
+    "rx_hex": "55 3F 06 00 08 00 39 00 12 67 90",
+    "tx_hex": "55 44 04 00 0A 00 00 AD 90",
+    "checksum_errors": 0,
+    "framing_errors": 0,
+    "timeouts": 0,
+    "state_age_ms": 180,
+    "control_state": "Start",
+    "level_queued": true,
+    "queued_controls": 0,
+    "control_ack_queued": false,
+    "queued_uart_replies": 2
+  },
+  "rfid": {
+    "state": "ready",
+    "ready": true,
+    "card_present": false,
+    "uid": "01234567",
+    "last_error": "",
+    "cards": 1,
+    "errors": 0,
+    "age_ms": 5000,
+    "vid": 4614,
+    "pid": 8455,
+    "atr": "3B 00",
+    "last_tx": "6F 05 00 00 00 00 02 00 00 00 FF CA 00 00 00",
+    "last_rx": "80 06 00 00 00 00 02 00 00 00 01 23 45 67 90 00",
+    "features": 263294,
+    "max_message_length": 273,
+    "last_sw": 36864
+  },
+  "health": {
+    "free_heap": 150000,
+    "min_free_heap": 140000
+  }
+}
